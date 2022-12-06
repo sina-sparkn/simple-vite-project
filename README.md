@@ -1,4 +1,4 @@
-after cloning run below command :
+after cloning run below command in terminal :
 ```
-*npm install
+$ npm install
 ```
