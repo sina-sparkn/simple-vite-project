@@ -1,2 +1,4 @@
 after cloning run below command :
-//npm install
+```
+*npm install
+```
