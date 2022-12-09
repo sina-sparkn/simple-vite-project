@@ -1,34 +1,90 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+const getEthereumObject = () => window.ethereum;
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+async function findMetaMaskAccounts() {
+  try {
+    const ethereum = getEthereumObject();
+
+    if (!ethereum) {
+      console.error("Install MetaMask!");
+      return null;
+    }
+
+    const accounts = await ethereum.request({ method: "eth_accounts" });
+
+    if (accounts.length !== 0) {
+      const account = accounts[0];
+      console.log("Found an authorized account:", account);
+      return account;
+    } else {
+      console.error("No authorized account found");
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
 
-export default App
+function App() {
+  const [currnetAccount, setCurrentAccount] = useState("");
+
+  {
+    /* ? what does this function do ? 👇*/
+  }
+
+  const connectToMetaMask = async () => {
+    try {
+      const ethereum = getEthereumObject();
+      if (!ethereum) {
+        alert("Get MetaMask!");
+        return;
+      }
+
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      console.log(`connected to account : ${accounts[0]}`);
+      setCurrentAccount(accounts[0]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const getAccount = async () => {
+      const account = await findMetaMaskAccounts();
+      if (account !== null) {
+        setCurrentAccount(account);
+      }
+    };
+
+    // getAccount().catch(console.error);
+    getAccount();
+  }, []);
+
+  return (
+    <div>
+      <h2>👋 Welcome Outsider</h2>
+      <h2>Come and Say Salam to me</h2>
+      <br />
+      <button onClick={null}>Say Salam to me</button>
+      <br />
+      <br />
+      {!currnetAccount ? (
+        <button onClick={connectToMetaMask}>Connect to MetaMask</button>
+      ) : (
+        <button>{currnetAccount}</button>
+      )}
+
+      {/* {!currnetAccount && (
+        <button onClick={connectToMetaMask}>Connect to MetaMask</button>
+      )} */}
+    </div>
+  );
+}
+
+export default App;
