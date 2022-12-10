@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ethers } from "ethers";
 import "./App.css";
 
 const getEthereumObject = () => window.ethereum;
@@ -51,6 +52,28 @@ function App() {
       setCurrentAccount(accounts[0]);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const Salam = async () => {
+    try {
+      const { ethObj } = window.ethereum;
+      if (ethObj) {
+        const provider = new ethers.providers(ethObj);
+        const signer = provider.getSigner();
+        const newContract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        let count = await newContract.getTotalSalams();
+        console.log("Retrieved total wave count...", count.toNumber());
+      } else {
+        console.log("ethereum object does not found!");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
