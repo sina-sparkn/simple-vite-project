@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import "./App.css";
+import abi from "./utils/newContract.json";
 
 const getEthereumObject = () => window.ethereum;
 
@@ -56,10 +57,13 @@ function App() {
   };
 
   const Salam = async () => {
+    const contractAddress = "0x58AB0e6c396071c5bf42496F8D0A341EAaCd520e";
+    const contractABI = abi.abi;
+
     try {
-      const { ethObj } = window.ethereum;
-      if (ethObj) {
-        const provider = new ethers.providers(ethObj);
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const newContract = new ethers.Contract(
           contractAddress,
@@ -68,12 +72,20 @@ function App() {
         );
 
         let count = await newContract.getTotalSalams();
-        console.log("Retrieved total wave count...", count.toNumber());
+        console.log("Retrieved total Salam count...", count.toNumber());
+
+        const saySalam = await newContract.Salam("ali");
+        console.log("mining...", saySalam);
+        await saySalam.wait();
+        console.log("mined--", saySalam.hash);
+
+        count = await newContract.getTotalSalams();
+        console.log("Retrieved total Salam count...", count.toNumber());
       } else {
         console.log("ethereum object does not found!");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -94,7 +106,7 @@ function App() {
       <h2>👋 Welcome Outsider</h2>
       <h2>Come and Say Salam to me</h2>
       <br />
-      <button onClick={null}>Say Salam to me</button>
+      <button onClick={Salam}>Say Salam to me</button>
       <br />
       <br />
       {!currnetAccount ? (
