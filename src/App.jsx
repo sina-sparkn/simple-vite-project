@@ -32,10 +32,7 @@ async function findMetaMaskAccounts() {
 
 function App() {
   const [currnetAccount, setCurrentAccount] = useState("");
-
-  {
-    /* ? what does this function do ? 👇*/
-  }
+  const [miningstatus, setminingstatus] = useState(null);
 
   const connectToMetaMask = async () => {
     try {
@@ -59,6 +56,7 @@ function App() {
   const Salam = async () => {
     const contractAddress = "0x58AB0e6c396071c5bf42496F8D0A341EAaCd520e";
     const contractABI = abi.abi;
+    setminingstatus(1);
 
     try {
       const { ethereum } = window;
@@ -79,6 +77,8 @@ function App() {
         await saySalam.wait();
         console.log("mined--", saySalam.hash);
 
+        setminingstatus(null);
+
         count = await newContract.getTotalSalams();
         console.log("Retrieved total Salam count...", count.toNumber());
       } else {
@@ -97,8 +97,7 @@ function App() {
       }
     };
 
-    // getAccount().catch(console.error);
-    getAccount();
+    getAccount().catch(console.error);
   }, []);
 
   return (
@@ -106,7 +105,11 @@ function App() {
       <h2>👋 Welcome Outsider</h2>
       <h2>Come and Say Salam to me</h2>
       <br />
-      <button onClick={Salam}>Say Salam to me</button>
+      {!miningstatus ? (
+        <button onClick={Salam}>Say Salam to me</button>
+      ) : (
+        <button onClick={Salam}>LOADING ...</button>
+      )}
       <br />
       <br />
       {!currnetAccount ? (
@@ -114,10 +117,6 @@ function App() {
       ) : (
         <button>{currnetAccount}</button>
       )}
-
-      {/* {!currnetAccount && (
-        <button onClick={connectToMetaMask}>Connect to MetaMask</button>
-      )} */}
     </div>
   );
 }
