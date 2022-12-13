@@ -56,9 +56,9 @@ function App() {
   const Salam = async () => {
     const contractAddress = "0x58AB0e6c396071c5bf42496F8D0A341EAaCd520e";
     const contractABI = abi.abi;
-    setminingstatus(1);
 
     try {
+      setminingstatus(1);
       const { ethereum } = window;
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
@@ -86,6 +86,7 @@ function App() {
       }
     } catch (error) {
       console.error(error);
+      setminingstatus(null);
     }
   };
 
@@ -108,7 +109,14 @@ function App() {
       {!miningstatus ? (
         <button onClick={Salam}>Say Salam to me</button>
       ) : (
-        <button onClick={Salam}>LOADING ...</button>
+        <button>
+          <div className="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </button>
       )}
       <br />
       <br />
