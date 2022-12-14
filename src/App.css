@@ -45,7 +45,7 @@
 .lds-ellipsis {
   display: inline-block;
   position: relative;
-  width: 80px;
+  width: 70px;
   height: 12px;
 }
 .lds-ellipsis div {

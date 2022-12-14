@@ -5,6 +5,7 @@ import abi from "./utils/newContract.json";
 
 const getEthereumObject = () => window.ethereum;
 
+//! Find the wallet function
 async function findMetaMaskAccounts() {
   try {
     const ethereum = getEthereumObject();
@@ -30,9 +31,11 @@ async function findMetaMaskAccounts() {
   }
 }
 
+//!the main function
 function App() {
   const [currnetAccount, setCurrentAccount] = useState("");
   const [miningstatus, setminingstatus] = useState(null);
+  const [allSalams, setAllSalams] = useState([]);
 
   const connectToMetaMask = async () => {
     try {
@@ -53,10 +56,11 @@ function App() {
     }
   };
 
-  const Salam = async () => {
-    const contractAddress = "0x58AB0e6c396071c5bf42496F8D0A341EAaCd520e";
-    const contractABI = abi.abi;
+  const contractAddress = "0xC99dA8eD0c3130391Fcb966500B26b0eAA0B12cb";
+  const contractABI = abi.abi;
 
+  //!the function behind Say salam to me button
+  const Salam = async () => {
     try {
       setminingstatus(1);
       const { ethereum } = window;
@@ -70,17 +74,20 @@ function App() {
         );
 
         let count = await newContract.getTotalSalams();
+
         console.log("Retrieved total Salam count...", count.toNumber());
 
-        const saySalam = await newContract.Salam("ali");
+        const saySalam = await newContract.Salam(
+          "ali",
+          "lol af this was a message!"
+        );
         console.log("mining...", saySalam);
         await saySalam.wait();
         console.log("mined--", saySalam.hash);
-
-        setminingstatus(null);
-
         count = await newContract.getTotalSalams();
         console.log("Retrieved total Salam count...", count.toNumber());
+
+        setminingstatus(null);
       } else {
         console.log("ethereum object does not found!");
       }
@@ -90,6 +97,45 @@ function App() {
     }
   };
 
+  //!get all information from the contract struct and add them as an array to the allSalams useState
+  async function GetSalamkona() {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        //!do some practice and research on ethers js. it is important!!!
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const newContract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        let Salams = await newContract.getAllSalamkona();
+
+        let SalamkonhaList = [];
+
+        //!what is forEach and how to use it?
+        Salams.forEach((salam) => {
+          SalamkonhaList.unshift({
+            address: salam.salamkon,
+            message: salam.message,
+
+            //!what is Date?
+            timeStamp: new Date(salam.timestamp * 1000),
+          });
+        });
+
+        setAllSalams(SalamkonhaList);
+      } else {
+        console.error("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  //!the useEffect to do what inside of it with every load or render
   useEffect(() => {
     const getAccount = async () => {
       const account = await findMetaMaskAccounts();
@@ -97,14 +143,17 @@ function App() {
         setCurrentAccount(account);
       }
     };
-
     getAccount().catch(console.error);
+    GetSalamkona().catch(console.error);
   }, []);
 
   return (
     <div>
       <h2>👋 Welcome Outsider</h2>
       <h2>Come and Say Salam to me</h2>
+      <br />
+      <input type="text" />
+      <br />
       <br />
       {!miningstatus ? (
         <button onClick={Salam}>Say Salam to me</button>
@@ -125,6 +174,28 @@ function App() {
       ) : (
         <button>{currnetAccount}</button>
       )}
+      <br />
+      <br />
+
+      {/*//!do some practice and research on MAP */}
+      {allSalams.map((salam, index) => {
+        return (
+          <div
+            key={index}
+            style={{
+              backgroundColor: "purple",
+              marginBottom: "25px",
+              borderRadius: "15px",
+              padding: "10px",
+            }}
+          >
+            <div>address : {salam.address}</div>
+            <div>message : {salam.message}</div>
+            <div>timestamp : {salam.timeStamp.toString()}</div>
+            <br />
+          </div>
+        );
+      })}
     </div>
   );
 }
