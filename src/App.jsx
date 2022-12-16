@@ -36,6 +36,8 @@ function App() {
   const [currnetAccount, setCurrentAccount] = useState("");
   const [miningstatus, setminingstatus] = useState(null);
   const [allSalams, setAllSalams] = useState([]);
+  const [theName, settheName] = useState("");
+  const [theMessage, settheMessage] = useState("");
 
   const connectToMetaMask = async () => {
     try {
@@ -77,10 +79,7 @@ function App() {
 
         console.log("Retrieved total Salam count...", count.toNumber());
 
-        const saySalam = await newContract.Salam(
-          "ali",
-          "lol af this was a message!"
-        );
+        const saySalam = await newContract.Salam(theName, theMessage);
         console.log("mining...", saySalam);
         await saySalam.wait();
         console.log("mined--", saySalam.hash);
@@ -152,7 +151,14 @@ function App() {
       <h2>👋 Welcome Outsider</h2>
       <h2>Come and Say Salam to me</h2>
       <br />
-      <input type="text" />
+      <h2>your name : </h2>
+      <input type="text" onChange={(event) => settheName(event.target.value)} />
+      <br />
+      <h2>your message : </h2>
+      <input
+        type="text"
+        onChange={(event) => settheMessage(event.target.value)}
+      />
       <br />
       <br />
       {!miningstatus ? (
