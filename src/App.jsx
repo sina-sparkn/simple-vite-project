@@ -31,12 +31,11 @@ async function findMetaMaskAccounts() {
   }
 }
 
-//!the main function
+//! APP
 function App() {
   const [currnetAccount, setCurrentAccount] = useState("");
   const [miningstatus, setminingstatus] = useState(null);
   const [allSalams, setAllSalams] = useState([]);
-  const [theName, settheName] = useState("");
   const [theMessage, settheMessage] = useState("");
 
   const connectToMetaMask = async () => {
@@ -58,10 +57,10 @@ function App() {
     }
   };
 
-  const contractAddress = "0xC99dA8eD0c3130391Fcb966500B26b0eAA0B12cb";
+  const contractAddress = "0xa4578DBB1528BacDeb2BE49206de0693bb6C32A1";
   const contractABI = abi.abi;
 
-  //!the function behind Say salam to me button
+  //!Salam function
   const Salam = async () => {
     try {
       setminingstatus(1);
@@ -79,7 +78,7 @@ function App() {
 
         console.log("Retrieved total Salam count...", count.toNumber());
 
-        const saySalam = await newContract.Salam(theName, theMessage);
+        const saySalam = await newContract.Salam(theMessage);
         console.log("mining...", saySalam);
         await saySalam.wait();
         console.log("mined--", saySalam.hash);
@@ -101,7 +100,6 @@ function App() {
     try {
       const { ethereum } = window;
       if (ethereum) {
-        //!do some practice and research on ethers js. it is important!!!
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const newContract = new ethers.Contract(
@@ -110,18 +108,16 @@ function App() {
           signer
         );
 
-        let Salams = await newContract.getAllSalamkona();
+        const Salams = await newContract.getAllSalamkona();
 
         let SalamkonhaList = [];
 
-        //!what is forEach and how to use it?
         Salams.forEach((salam) => {
           SalamkonhaList.unshift({
             address: salam.salamkon,
             message: salam.message,
-
-            //!what is Date?
             timeStamp: new Date(salam.timestamp * 1000),
+            thisUserSalams: salam.numberOfSalams,
           });
         });
 
@@ -134,7 +130,7 @@ function App() {
     }
   }
 
-  //!the useEffect to do what inside of it with every load or render
+  //!useEffect
   useEffect(() => {
     const getAccount = async () => {
       const account = await findMetaMaskAccounts();
@@ -150,9 +146,6 @@ function App() {
     <div>
       <h2>👋 Welcome Outsider</h2>
       <h2>Come and Say Salam to me</h2>
-      <br />
-      <h2>your name : </h2>
-      <input type="text" onChange={(event) => settheName(event.target.value)} />
       <br />
       <h2>your message : </h2>
       <input
@@ -183,7 +176,6 @@ function App() {
       <br />
       <br />
 
-      {/*//!do some practice and research on MAP */}
       {allSalams.map((salam, index) => {
         return (
           <div
@@ -197,7 +189,11 @@ function App() {
           >
             <div>address : {salam.address}</div>
             <div>message : {salam.message}</div>
+            <div>
+              number of this address Salams : {salam.thisUserSalams.toString()}
+            </div>
             <div>timestamp : {salam.timeStamp.toString()}</div>
+
             <br />
           </div>
         );
