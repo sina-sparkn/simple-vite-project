@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import "./App.css";
 import abi from "./utils/newContract.json";
+import "../dist/output.css";
 
 const getEthereumObject = () => window.ethereum;
 
@@ -143,61 +143,75 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <h2>👋 Welcome Outsider</h2>
-      <h2>Come and Say Salam to me</h2>
-      <br />
-      <h2>your message : </h2>
-      <input
-        type="text"
-        onChange={(event) => settheMessage(event.target.value)}
-      />
-      <br />
-      <br />
-      {!miningstatus ? (
-        <button onClick={Salam}>Say Salam to me</button>
-      ) : (
-        <button>
-          <div className="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        </button>
-      )}
-      <br />
-      <br />
-      {!currnetAccount ? (
-        <button onClick={connectToMetaMask}>Connect to MetaMask</button>
-      ) : (
-        <button>{currnetAccount}</button>
-      )}
-      <br />
-      <br />
+    <div className="flex p-20 bg-zinc-900 text-gray-100 gap-5 text-xl Spline_Sans_Mono_700 w-full h-full">
+      <section className="w-1/2 flex flex-col justify-center items-center gap-10">
+        <div className="text-3xl flex flex-col gap-3">
+          <h2 className="">Hi my beautiful Friend</h2>
+          <h2>Come and Say Salam to me</h2>
+        </div>
+        <div className="flex flex-col gap-3 mt-7">
+          <h2>your message to me : </h2>
+          <input
+            type="text"
+            onChange={(event) => settheMessage(event.target.value)}
+            className="outline-none border border-blue-500/70 transition-all text-white p-3 px-5 rounded-lg bg-transparent hover:bg-blue-500/10"
+          />
+        </div>
 
-      {allSalams.map((salam, index) => {
-        return (
-          <div
-            key={index}
-            style={{
-              backgroundColor: "purple",
-              marginBottom: "25px",
-              borderRadius: "15px",
-              padding: "10px",
-            }}
+        {!miningstatus ? (
+          <button
+            onClick={Salam}
+            className="bg-blue-600 p-3 px-5 rounded-lg Spline_Sans_Mono_600 transition-all hover:bg-blue-500"
           >
-            <div>address : {salam.address}</div>
-            <div>message : {salam.message}</div>
-            <div>
-              number of this address Salams : {salam.thisUserSalams.toString()}
-            </div>
-            <div>timestamp : {salam.timeStamp.toString()}</div>
+            Say Salam to me
+          </button>
+        ) : (
+          <button className="bg-blue-500 p-3 px-5 rounded-lg cursor-default">
+            loading...
+          </button>
+        )}
 
-            <br />
+        {!currnetAccount && (
+          <button
+            className="bg-blue-600 transition-all p-3 px-5 rounded-lg Spline_Sans_Mono_600 hover:bg-blue-500"
+            onClick={connectToMetaMask}
+          >
+            Connect to MetaMask
+          </button>
+        )}
+      </section>
+
+      <section className="flex flex-col gap-10 w-1/2 overflow-y-scroll pr-10">
+        <div>Salamcona : </div>
+
+        {!currnetAccount && (
+          <div>
+            <strong>connect to metamask with goerli tetnet</strong>
           </div>
-        );
-      })}
+        )}
+        {allSalams.map((salam, index) => {
+          return (
+            <div
+              key={index}
+              className="bg-blue-500/70 p-5 Spline_Sans_Mono_500 rounded-lg flex flex-col gap-5"
+            >
+              <div>
+                <strong>address :</strong> {salam.address}
+              </div>
+              <div>
+                <strong>message :</strong> {salam.message}
+              </div>
+              <div>
+                <strong>number of this address Salams :</strong>
+                {salam.thisUserSalams.toString()}
+              </div>
+              <div>
+                <strong>timestamp :</strong> {salam.timeStamp.toString()}
+              </div>
+            </div>
+          );
+        })}
+      </section>
     </div>
   );
 }
