@@ -154,7 +154,7 @@ function App() {
           <input
             type="text"
             onChange={(event) => settheMessage(event.target.value)}
-            className="outline-none border border-blue-500/70 transition-all text-white p-3 px-5 rounded-lg bg-transparent hover:bg-blue-500/10"
+            className="outline-none bg-blue-600/30 transition-all text-white p-3 px-5 rounded-lg"
           />
         </div>
 
@@ -166,9 +166,7 @@ function App() {
             Say Salam to me
           </button>
         ) : (
-          <button className="bg-blue-500 p-3 px-5 rounded-lg cursor-default">
-            loading...
-          </button>
+          <span className="loader text-white"></span>
         )}
 
         {!currnetAccount && (
@@ -196,17 +194,17 @@ function App() {
               className="bg-blue-500/70 p-5 Spline_Sans_Mono_500 rounded-lg flex flex-col gap-5"
             >
               <div>
-                <strong>address :</strong> {salam.address}
+                <strong>Address :</strong> {salam.address}
               </div>
               <div>
-                <strong>message :</strong> {salam.message}
+                <strong>Message :</strong> {salam.message}
               </div>
               <div>
-                <strong>number of this address Salams :</strong>
+                <strong>This user Salam Counter : </strong>
                 {salam.thisUserSalams.toString()}
               </div>
               <div>
-                <strong>timestamp :</strong> {salam.timeStamp.toString()}
+                <strong>Timestamp :</strong> {salam.timeStamp.toString()}
               </div>
             </div>
           );
