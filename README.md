@@ -1,4 +1,6 @@
-after cloning run below command in terminal :
+After cloning run the command in terminal :
+
 ```
 $ npm install
 ```
+Added tailwind
