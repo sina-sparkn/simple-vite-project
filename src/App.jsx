@@ -57,7 +57,7 @@ function App() {
     }
   };
 
-  const contractAddress = "0xa4578DBB1528BacDeb2BE49206de0693bb6C32A1";
+  const contractAddress = "0x51a6Af4ffD3984B681ec9d2deC75e26a39B8aeC5";
   const contractABI = abi.abi;
 
   //!Salam function
@@ -184,7 +184,7 @@ function App() {
 
         {!currnetAccount && (
           <div>
-            <strong>connect to metamask with goerli tetnet</strong>
+            <strong>Connect to Metamask with goerli testnet</strong>
           </div>
         )}
         {allSalams.map((salam, index) => {
