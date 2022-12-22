@@ -57,7 +57,7 @@ function App() {
     }
   };
 
-  const contractAddress = "0xDaa020fa3127bDa793579932a30260f22a025dc5";
+  const contractAddress = "0x8EFb69454B42FfA56aC499936E953C18E7983d64";
   const contractABI = abi.abi;
 
   //!Salam function
@@ -78,7 +78,14 @@ function App() {
 
         console.log("Retrieved total Salam count...", count.toNumber());
 
-        const saySalam = await newContract.Salam(theMessage);
+        const saySalam = await newContract.Salam(theMessage, {
+          gasLimit: 300000,
+        });
+        const seed = await newContract.gettheSeed();
+        console.log(`the seed is ${seed}`);
+
+        console.log("gasLimit", saySalam.gasLimit.toNumber());
+        console.log("gasPrice", saySalam.gasPrice.toNumber());
         console.log("mining...", saySalam);
         await saySalam.wait();
         console.log("mined--", saySalam.hash);
@@ -140,6 +147,36 @@ function App() {
     };
     getAccount().catch(console.error);
     GetSalamkona().catch(console.error);
+
+    //! from here !
+    let newContract;
+
+    const onNewSalam = (from, timestamp, message) => {
+      console.log("newSalam", from, timestamp, message);
+      GetSalamkona((prevState) => [
+        ...prevState,
+        {
+          address: from,
+          timestamp: new Date(timestamp * 1000),
+          message: message,
+        },
+      ]);
+    };
+
+    if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      newContract = new ethers.Contract(contractAddress, contractABI, signer);
+      newContract.on("newSalam", onNewSalam);
+    }
+
+    return () => {
+      if (newContract) {
+        newContract.off("newSalam", onNewSalam);
+      }
+    };
+    //! all the way down over here !
   }, []);
 
   return (
