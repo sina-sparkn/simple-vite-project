@@ -149,26 +149,30 @@ function App() {
     GetSalamkona().catch(console.error);
 
     //! from here !
-    let newContract;
 
-    const onNewSalam = (from, timestamp, message) => {
-      console.log("newSalam", from, timestamp, message);
-      GetSalamkona((prevState) => [
-        ...prevState,
+    const onNewSalam = (salamkon, message, numberOfSalams, timestamp) => {
+      GetSalamkona((prev) => [
         {
-          address: from,
-          timestamp: new Date(timestamp * 1000),
+          ...prev,
+          address: salamkon,
           message: message,
+          thisUserSalams: numberOfSalams,
+          timestamp: new Date(timestamp * 1000),
         },
       ]);
     };
 
-    if (window.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+    let newContract;
+    const { ethereum } = window;
+
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = provider.getSigner();
 
       newContract = new ethers.Contract(contractAddress, contractABI, signer);
       newContract.on("newSalam", onNewSalam);
+    } else {
+      console.error("ethereum object does not found!");
     }
 
     return () => {
@@ -176,6 +180,7 @@ function App() {
         newContract.off("newSalam", onNewSalam);
       }
     };
+
     //! all the way down over here !
   }, []);
 
